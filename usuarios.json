@@ -1,0 +1,12 @@
+{
+    "admin": {
+        "senha": "1234",
+        "nome": "Administrador",
+        "bio": "gosto de comer bastante",
+        "meta": "",
+        "foto": "static/uploads\\image.png"
+    },
+    "ades": {
+        "senha": "1234"
+    }
+}

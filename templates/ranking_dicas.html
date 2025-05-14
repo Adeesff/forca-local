@@ -1,0 +1,199 @@
+
+{% block title %}Ranking e Dicas{% endblock %}
+
+{% block conteudo %}
+<style>
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background: url('/static/rankingdicas.png') no-repeat center center fixed;
+    background-size: cover;
+    color: white;
+    margin: 0;
+    padding: 0;
+  }
+
+  .container {
+    background-color: rgba(0, 0, 0, 0.75);
+    padding: 40px;
+    border-radius: 20px;
+    max-width: 800px;
+    margin: auto;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    text-align: center;
+  }
+
+  .container h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+    color: #FFD700;
+  }
+
+  .container h2 {
+    margin-top: 30px;
+    font-size: 28px;
+    color: #ffc107;
+  }
+
+  .container h3 {
+    font-size: 22px;
+    margin-top: 15px;
+    color: #fff;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  li {
+    font-size: 18px;
+    margin: 8px 0;
+    color: #fff;
+  }
+
+  .ranking-list {
+    padding: 20px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    margin-bottom: 30px;
+  }
+
+  .ranking-list li {
+    font-weight: bold;
+    font-size: 18px;
+    color: #ffc107;
+  }
+
+  .dicas-list {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 12px;
+    margin-top: 20px;
+  }
+
+  /* Chatbot */
+  #chatbot-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #FFD700;
+    color: black;
+    border: none;
+    border-radius: 50%;
+    width: 55px;
+    height: 55px;
+    font-size: 26px;
+    cursor: pointer;
+    z-index: 999;
+    box-shadow: 0 0 10px black;
+  }
+
+  #chatbot-window {
+    display: none;
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 300px;
+    background-color: rgba(0, 0, 0, 0.95);
+    border-radius: 12px;
+    padding: 15px;
+    color: white;
+    z-index: 1000;
+  }
+
+  #chatbot-window h4 {
+    margin-top: 0;
+    color: #FFD700;
+  }
+
+  #chat-messages {
+    height: 150px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    border: 1px solid #333;
+    padding: 10px;
+    background-color: #111;
+    border-radius: 6px;
+  }
+
+  #chat-input {
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    border: none;
+  }
+</style>
+
+<div class="container">
+  <h1>🏆 Ranking de Pontuação</h1>
+
+  <div class="ranking-list">
+    <ul>
+      {% for user in ranking %}
+        <li>{{ user.nome }} - {{ user.pontos }} pontos</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <h2>Sua Pontuação</h2>
+  <p>{{ usuario }} - {{ pontuacao }} pontos</p>
+
+  <h2>Dicas de Treino</h2>
+
+  <div class="dicas-list">
+    <h3>Para Homens</h3>
+    <ul>
+      <li>Treine grupos musculares alternados.</li>
+      <li>Foque em exercícios compostos como agachamento e supino.</li>
+    </ul>
+  </div>
+
+  <div class="dicas-list">
+    <h3>Para Mulheres</h3>
+    <ul>
+      <li>Dê atenção ao core e aos glúteos.</li>
+      <li>Inclua cardio leve e musculação.</li>
+    </ul>
+  </div>
+</div>
+
+<button id="chatbot-icon">💬</button>
+
+<div id="chatbot-window">
+  <h4>Ajuda Rápida</h4>
+  <div id="chat-messages">
+    <p><strong>Bot:</strong> Fale sobre pontuação, treino ou dúvidas!</p>
+  </div>
+  <input type="text" id="chat-input" placeholder="Digite aqui...">
+</div>
+
+<script>
+  const chatbotIcon = document.getElementById("chatbot-icon");
+  const chatbotWindow = document.getElementById("chatbot-window");
+  const chatInput = document.getElementById("chat-input");
+  const chatMessages = document.getElementById("chat-messages");
+
+  chatbotIcon.addEventListener("click", () => {
+    chatbotWindow.style.display = chatbotWindow.style.display === "none" ? "block" : "none";
+  });
+
+  chatInput.addEventListener("keypress", function (e) {
+    if (e.key === "Enter" && chatInput.value.trim() !== "") {
+      const userMsg = chatInput.value.trim();
+      chatMessages.innerHTML += `<p><strong>Você:</strong> ${userMsg}</p>`;
+      chatInput.value = "";
+
+      let resposta = "Desculpe, não entendi. Tente perguntar de outra forma.";
+
+      if (userMsg.toLowerCase().includes("ranking") || userMsg.toLowerCase().includes("pontuação")) {
+        resposta = "Você sobe no ranking conforme sua frequência na academia!";
+      } else if (userMsg.toLowerCase().includes("dica")) {
+        resposta = "Dicas de treino estão logo abaixo para homens e mulheres!";
+      }
+
+      chatMessages.innerHTML += `<p><strong>Bot:</strong> ${resposta}</p>`;
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Plano de Treino - Força Local</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: url("/static/plano_treino.png") no-repeat center center fixed;
+      background-size: cover;
+      margin: 0;
+      color: #fff;
+    }
+    header {
+      background: #000;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      color: #FFD700;
+      font-size: 24px;
+    }
+    nav a {
+      color: #fff;
+      margin-left: 20px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    nav a:hover {
+      color: #FFD700;
+    }
+    .container {
+      max-width: 600px;
+      margin: 60px auto;
+      background-color: rgba(0,0,0,0.8);
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+    select, button {
+      width: 100%;
+      padding: 12px;
+      margin: 15px 0;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    button {
+      background-color: #FFD700;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #e6c200;
+    }
+    .resultado {
+      margin-top: 20px;
+      background-color: rgba(255,255,255,0.1);
+      padding: 20px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Força Local</h1>
+    <nav>
+      <a href="/dashboard">Início</a>
+      <a href="/logout">Sair</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h2>Escolha sua meta</h2>
+    <form method="POST">
+      <select name="meta" required>
+        <option value="">Selecione sua meta</option>
+        <option value="hipertrofia">Hipertrofia</option>
+        <option value="emagrecimento">Emagrecimento</option>
+        <option value="resistencia">Resistência</option>
+      </select>
+      <button type="submit">Ver Plano</button>
+    </form>
+
+    {% if plano %}
+      <div class="resultado">
+        <h3>Plano recomendado:</h3>
+        <ul>
+          {% for item in plano %}
+            <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+  </div>
+
+<!-- Botão de Chat Flutuante com Font Awesome -->
+<a href="/chat" class="chat-flutuante" title="Chat com Alunos">
+  <i class="fas fa-comments"></i>
+</a>
+</body>
+</html>

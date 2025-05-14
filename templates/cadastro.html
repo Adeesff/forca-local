@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Cadastro - Força Local</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: url("/static/imagens/cadastro_fundo.jpg") no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: white;
+    }
+
+    .box {
+      background-color: rgba(0,0,0,0.8);
+      padding: 30px;
+      border-radius: 10px;
+      width: 300px;
+      box-shadow: 0 0 10px black;
+      text-align: center;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: none;
+    }
+
+    button {
+      background-color: #FFD700;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .mensagem {
+      margin-top: 10px;
+      color: red;
+    }
+
+    a {
+      color: #FFD700;
+      text-decoration: none;
+      display: block;
+      margin-top: 15px;
+    }
+
+    i {
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2><i class="fas fa-user-plus"></i> Criar Conta</h2>
+    <form method="POST">
+      <input type="text" name="usuario" placeholder="Usuário" required>
+      <input type="password" name="senha" placeholder="Senha" required>
+      <button type="submit"><i class="fas fa-check"></i> Cadastrar</button>
+    </form>
+    {% if mensagem %}
+      <div class="mensagem">{{ mensagem }}</div>
+    {% endif %}
+    <a href="/login"><i class="fas fa-sign-in-alt"></i> Já tem conta? Fazer login</a>
+  </div>
+</body>
+</html>

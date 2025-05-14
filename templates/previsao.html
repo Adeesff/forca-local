@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Previsão de Cancelamento - Força Local</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: url("/static/previsao.png") no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: #000;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 { color: #FFD700; font-size: 24px; }
+    nav a {
+      color: #fff;
+      margin-left: 20px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    nav a:hover { color: #FFD700; }
+
+    .previsao-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+    }
+    .previsao-box {
+      background: rgba(0,0,0,0.8);
+      padding: 40px 30px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      text-align: center;
+    }
+    .previsao-box h2 {
+      margin-bottom: 25px;
+      color: #FFD700;
+      font-size: 28px;
+    }
+    .previsao-box input {
+      width: 100%;
+      padding: 12px;
+      margin: 12px 0;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    .previsao-box button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 20px;
+      background: #FFD700;
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .previsao-box button:hover {
+      background: #e6c200;
+    }
+    #resultado {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #00ffcc;
+      white-space: pre-line;
+    }
+
+    /* Chatbot */
+    #chatbot-icon {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #FFD700;
+      color: black;
+      border: none;
+      border-radius: 50%;
+      width: 55px;
+      height: 55px;
+      font-size: 26px;
+      cursor: pointer;
+      z-index: 999;
+      box-shadow: 0 0 10px black;
+    }
+
+    #chatbot-window {
+      display: none;
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      width: 300px;
+      background-color: rgba(0, 0, 0, 0.95);
+      border-radius: 12px;
+      padding: 15px;
+      color: white;
+      z-index: 1000;
+    }
+
+    #chatbot-window h4 {
+      margin-top: 0;
+      color: #FFD700;
+    }
+
+    #chat-messages {
+      height: 150px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+      border: 1px solid #333;
+      padding: 10px;
+      background-color: #111;
+      border-radius: 6px;
+    }
+
+    #chat-input {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Força Local</h1>
+    <nav>
+      <a href="/dashboard">Início</a>
+      <a href="/logout">Sair</a>
+    </nav>
+  </header>
+
+  <div class="previsao-container">
+    <div class="previsao-box">
+      <h2> Previsão de Cancelamento</h2>
+      <input type="number" id="idade" placeholder="Idade (anos)" required>
+      <input type="number" id="frequencia" placeholder="Frequência semanal" required>
+      <button onclick="fazerPrevisao()">Prever</button>
+      <div id="resultado"></div>
+    </div>
+  </div>
+
+  <button id="chatbot-icon">💬</button>
+
+  <div id="chatbot-window">
+    <h4>Ajuda Rápida</h4>
+    <div id="chat-messages">
+      <p><strong>Bot:</strong> Pergunte sobre treinos, alimentação ou dúvidas.</p>
+    </div>
+    <input type="text" id="chat-input" placeholder="Digite aqui...">
+  </div>
+
+  <script>
+    function fazerPrevisao() {
+      const idade = parseInt(document.getElementById('idade').value);
+      const frequencia = parseInt(document.getElementById('frequencia').value);
+      if (isNaN(idade) || isNaN(frequencia)) {
+        document.getElementById('resultado').innerText = 'Preencha ambos os campos.';
+        return;
+      }
+      fetch('/prever', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ idade, frequencia })
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('resultado').innerText =
+          `📊 Cancelamento: ${data.cancelamento}\n🎯 Acurácia: ${data.acuracia * 100}%`;
+      })
+      .catch(() => {
+        document.getElementById('resultado').innerText = '❌ Erro ao obter previsão.';
+      });
+    }
+
+    const chatbotIcon = document.getElementById("chatbot-icon");
+    const chatbotWindow = document.getElementById("chatbot-window");
+    const chatInput = document.getElementById("chat-input");
+    const chatMessages = document.getElementById("chat-messages");
+
+    chatbotIcon.addEventListener("click", () => {
+      chatbotWindow.style.display = chatbotWindow.style.display === "none" ? "block" : "none";
+    });
+
+    chatInput.addEventListener("keypress", function (e) {
+      if (e.key === "Enter" && chatInput.value.trim() !== "") {
+        const userMsg = chatInput.value.trim();
+        chatMessages.innerHTML += `<p><strong>Você:</strong> ${userMsg}</p>`;
+        chatInput.value = "";
+
+        let resposta = "Desculpe, não entendi. Tente perguntar de outra forma.";
+
+        if (userMsg.toLowerCase().includes("emagrecer")) {
+          resposta = "Para emagrecer, mantenha déficit calórico e foque em treinos cardiovasculares.";
+        } else if (userMsg.toLowerCase().includes("hipertrofia")) {
+          resposta = "Treinos intensos com foco em musculação + dieta com superávit calórico ajudam.";
+        } else if (userMsg.toLowerCase().includes("proteína")) {
+          resposta = "A ingestão ideal de proteína varia entre 1.6 a 2.2g por kg de peso corporal.";
+        } else if (userMsg.toLowerCase().includes("descanso")) {
+          resposta = "O descanso é essencial. O ideal é dormir de 7 a 9 horas por noite.";
+        }
+
+        chatMessages.innerHTML += `<p><strong>Bot:</strong> ${resposta}</p>`;
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "admin": {
+    "nome": "Administrador",
+    "bio": "Gestor da plataforma",
+    "ultima_alteracao": "2025-05-08"
+  },
+  "joao": {
+    "nome": "João da Silva",
+    "bio": "Treinando para ficar forte",
+    "ultima_alteracao": "2025-05-06"
+  },
+  "maria": {
+    "nome": "Maria Souza",
+    "bio": "Foco e disciplina",
+    "ultima_alteracao": "2025-05-07"
+  }
+}

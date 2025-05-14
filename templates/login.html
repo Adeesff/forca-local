@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Força Local</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      background: url('/static/login.png') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .login-box {
+      background-color: rgba(0, 0, 0, 0.89);
+      padding: 40px;
+      border-radius: 10px;
+      width: 300px;
+      box-shadow: 0 0 10px #000;
+      color: #fff;
+    }
+
+    .login-box h2 {
+      margin-bottom: 25px;
+      text-align: center;
+      color: #FFD700;
+    }
+
+    .login-box input[type="text"],
+    .login-box input[type="password"] {
+      width: 100%;
+      padding: 11px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .login-box button {
+      width: 100%;
+      padding: 10px 3px;
+      background-color: #FFD700;
+      border: none;
+      border-radius: 7px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.4s ease;
+      margin-left: 20px;
+      width: calc(100% - 20px);
+    }
+
+    .login-box button:hover {
+      background-color: #00e60c;
+    }
+
+    .login-box .cadastro-btn {
+      margin-top: 15px;
+      background-color: #00c0ff;
+    }
+
+    .login-box .cadastro-btn:hover {
+      background-color: #00a0cc;
+    }
+
+    .login-box i {
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <h2><i class="fas fa-sign-in-alt"></i> Entrar</h2>
+    <form action="/login" method="post">
+      <input type="text" name="usuario" placeholder="Usuário" required>
+      <input type="password" name="senha" placeholder="Senha" required>
+      <button type="submit"><i class="fas fa-door-open"></i> Acessar</button>
+    </form>
+    <form action="/cadastro" method="get">
+      <button type="submit" class="cadastro-btn"><i class="fas fa-user-plus"></i> Cadastrar-se</button>
+    </form>
+  </div>
+
+</a>
+</body>
+</html>

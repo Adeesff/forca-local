@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academia Força Local</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: url('/static/imagens/fundo-smart.jpg') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            color: white;
+        }
+
+        header {
+            background-color: #000;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header img {
+            height: 40px;
+        }
+
+        nav a {
+            color: #FFD100;
+            margin-left: 20px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: white;
+        }
+
+        .main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: calc(100vh - 80px);
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 40px;
+        }
+
+        .main h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #FFD100;
+        }
+
+        .main p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            font-size: 1rem;
+            background-color: #FFD100;
+            color: black;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background-color: #e6be00;
+        }
+
+        @media (max-width: 768px) {
+            .main h1 {
+                font-size: 2rem;
+            }
+
+            .main p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="/static/imagens/logo.png" alt="Logo Academia">
+        <nav>
+            <a href="/">Início</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/ranking">Ranking</a>
+            <a href="/recompensa">Recompensas</a>
+            <a href="/logout">Sair</a>
+        </nav>
+    </header>
+
+    <div class="main">
+        <h1>Bem-vindo à Força Local</h1>
+        <p>Transforme seu corpo, sua mente e sua rotina. Acompanhe sua evolução e ganhe recompensas!</p>
+        <a href="/login" class="btn">Entrar agora</a>
+    </div>
+</body>
+</html>

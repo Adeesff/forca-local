@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Recompensas - Força Local</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: url("/static/login.png") no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: #000;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 { color: #FFD700; font-size: 24px; }
+    nav a {
+      color: #fff;
+      margin-left: 20px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    nav a:hover { color: #FFD700; }
+
+    .recompensa-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+    }
+    .recompensa-box {
+      background: rgba(0,0,0,0.8);
+      padding: 40px 30px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      text-align: center;
+    }
+    .recompensa-box h2 {
+      margin-bottom: 25px;
+      color: #FFD700;
+      font-size: 28px;
+    }
+    .recompensa-box img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+    .recompensa-box button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 20px;
+      background: #FFD700;
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .recompensa-box button:hover {
+      background: #e6c200;
+    }
+    #mensagem {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #00ffcc;
+      font-weight: bold;
+    }
+
+    /* Chatbot */
+    #chatbot-icon {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #FFD700;
+      color: black;
+      border: none;
+      border-radius: 50%;
+      width: 55px;
+      height: 55px;
+      font-size: 26px;
+      cursor: pointer;
+      z-index: 999;
+      box-shadow: 0 0 10px black;
+    }
+
+    #chatbot-window {
+      display: none;
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      width: 300px;
+      background-color: rgba(0, 0, 0, 0.95);
+      border-radius: 12px;
+      padding: 15px;
+      color: white;
+      z-index: 1000;
+    }
+
+    #chatbot-window h4 {
+      margin-top: 0;
+      color: #FFD700;
+    }
+
+    #chat-messages {
+      height: 150px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+      border: 1px solid #333;
+      padding: 10px;
+      background-color: #111;
+      border-radius: 6px;
+    }
+
+    #chat-input {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Força Local</h1>
+    <nav>
+      <a href="/dashboard">Início</a>
+      <a href="/logout">Sair</a>
+    </nav>
+  </header>
+
+  <div class="recompensa-container">
+    <div class="recompensa-box">
+      <h2>Resgatar Recompensa</h2>
+      <img src="/static/recompensa.png" alt="Imagem da Recompensa">
+      <p>Você pode resgatar um brinde exclusivo da academia.</p>
+      <button onclick="resgatar()">Resgatar</button>
+      <div id="mensagem"></div>
+    </div>
+  </div>
+
+  <button id="chatbot-icon">💬</button>
+
+  <div id="chatbot-window">
+    <h4>Ajuda Rápida</h4>
+    <div id="chat-messages">
+      <p><strong>Bot:</strong> Pergunte sobre treinos, alimentação ou recompensas.</p>
+    </div>
+    <input type="text" id="chat-input" placeholder="Digite aqui...">
+  </div>
+
+  <script>
+    function resgatar() {
+      fetch('/resgatar', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('mensagem').innerText = `Código gerado: ${data.codigo}`;
+        })
+        .catch(() => {
+          document.getElementById('mensagem').innerText = '❌ Erro ao gerar código.';
+        });
+    }
+
+    const chatbotIcon = document.getElementById("chatbot-icon");
+    const chatbotWindow = document.getElementById("chatbot-window");
+    const chatInput = document.getElementById("chat-input");
+    const chatMessages = document.getElementById("chat-messages");
+
+    chatbotIcon.addEventListener("click", () => {
+      chatbotWindow.style.display = chatbotWindow.style.display === "none" ? "block" : "none";
+    });
+
+    chatInput.addEventListener("keypress", function (e) {
+      if (e.key === "Enter" && chatInput.value.trim() !== "") {
+        const userMsg = chatInput.value.trim();
+        chatMessages.innerHTML += `<p><strong>Você:</strong> ${userMsg}</p>`;
+        chatInput.value = "";
+
+        let resposta = "Desculpe, não entendi. Tente perguntar de outra forma.";
+
+        if (userMsg.toLowerCase().includes("brinde") || userMsg.toLowerCase().includes("recompensa")) {
+          resposta = "Você pode resgatar recompensas exclusivas ao manter boa frequência!";
+        } else if (userMsg.toLowerCase().includes("frequência")) {
+          resposta = "A frequência é registrada conforme suas visitas semanais.";
+        } else if (userMsg.toLowerCase().includes("treino")) {
+          resposta = "Treinar de forma consistente aumenta suas chances de ganhar recompensas!";
+        }
+
+        chatMessages.innerHTML += `<p><strong>Bot:</strong> ${resposta}</p>`;
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+    });
+  </script>
+
+  <!-- Botão de Chat Flutuante com Font Awesome -->
+  <a href="/chat" class="chat-flutuante" title="Chat com Alunos">
+    <i class="fas fa-comments"></i>
+</a>
+</body>
+</html>

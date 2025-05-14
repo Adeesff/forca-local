@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Recomendações de Treino - Força Local</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: url("/static/recomendacoes.png") no-repeat center center fixed;
+      background-size: cover;
+      margin: 0;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background-color: #000;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      color: #FFD700;
+      font-size: 24px;
+    }
+
+    nav a {
+      color: white;
+      margin-left: 20px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      color: #FFD700;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 50px auto;
+      background-color: rgba(0, 0, 0, 0.85);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    }
+
+    h2 {
+      color: #FFD700;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      background-color: rgba(255, 255, 255, 0.05);
+      margin: 10px 0;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    .meta {
+      text-align: center;
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Força Local</h1>
+    <nav>
+      <a href="/dashboard">Início</a>
+      <a href="/logout">Sair</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h2>Recomendações de Treino</h2>
+    <p class="meta">Meta atual: <strong>{{ meta|capitalize }}</strong></p>
+    <ul>
+      {% for item in sugestoes %}
+        <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Botão de Chat Flutuante com Font Awesome -->
+      <a href="/chat" class="chat-flutuante" title="Chat com Alunos">
+    <i class="fas fa-comments"></i>
+     </a>
+</body>
+</html>

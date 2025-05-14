@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - Força Local</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: url("/static/menu.png") no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: #000;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 { color: #FFD700; font-size: 24px; }
+    nav a {
+      color: #fff;
+      margin-left: 20px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    nav a:hover { color: #FFD700; }
+
+    .dashboard-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+    .dashboard-box {
+      background: rgba(0,0,0,0.8);
+      padding: 40px 30px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 600px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      text-align: center;
+    }
+    .dashboard-box h2 {
+      margin-bottom: 25px;
+      color: #FFD700;
+      font-size: 28px;
+    }
+    .dashboard-box p {
+      margin: 10px 0;
+      font-size: 18px;
+    }
+    .dashboard-box button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 20px;
+      background: #FFD700;
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .dashboard-box button:hover {
+      background: #e6c200;
+    }
+
+    /* Chatbot ícone e janela */
+    #chatbot-icon {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #FFD700;
+      color: black;
+      border: none;
+      border-radius: 50%;
+      width: 55px;
+      height: 55px;
+      font-size: 26px;
+      cursor: pointer;
+      z-index: 999;
+      box-shadow: 0 0 10px black;
+    }
+
+    #chatbot-window {
+      display: none;
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      width: 300px;
+      background-color: rgba(0, 0, 0, 0.95);
+      border-radius: 12px;
+      padding: 15px;
+      color: white;
+      z-index: 1000;
+    }
+
+    #chatbot-window h4 {
+      margin-top: 0;
+      color: #FFD700;
+    }
+
+    #chat-messages {
+      height: 150px;
+      overflow-y: auto;
+      margin-bottom: 10px;
+      border: 1px solid #333;
+      padding: 10px;
+      background-color: #111;
+      border-radius: 6px;
+    }
+
+    #chat-input {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Força Local</h1>
+    <nav>
+      <a href="/logout">Sair</a>
+    </nav>
+  </header>
+
+  <div class="dashboard-container">
+    <div class="dashboard-box">
+      <h2>Bem-vindo, {{ usuario }}!</h2>
+      <p>Aqui você pode acessar seu progresso no ranking, recompensas e mais!</p>
+      <button onclick="window.location.href='/recompensa'">Acessar Recompensas</button>
+      <button onclick="window.location.href='/ranking_dicas'">Ver Ranking</button>
+      <button onclick="window.location.href='/perfil'">Editar perfil</button>
+      <button onclick="window.location.href='/plano_treino'">Ver plano de treino</button>
+      <button onclick="window.location.href='/progresso'">Ver progresso</button>
+      {% if usuario == 'admin' %}
+      <button onclick="window.location.href='/previsao'">Ver Previsão de Cancelamento</button>
+      <button onclick="window.location.href='/fazer_backup'">Fazer Backup Completo</button>
+{% endif %}
+    </div>
+  </div>
+
+  <!-- Chatbot flutuante -->
+  <button id="chatbot-icon">💬</button>
+
+  <div id="chatbot-window">
+    <h4>Ajuda Rápida</h4>
+    <div id="chat-messages">
+      <p><strong>Bot:</strong> Olá! Pergunte algo sobre treinos ou alimentação.</p>
+    </div>
+    <input type="text" id="chat-input" placeholder="Digite aqui...">
+  </div>
+
+  <script>
+    const chatbotIcon = document.getElementById("chatbot-icon");
+    const chatbotWindow = document.getElementById("chatbot-window");
+    const chatInput = document.getElementById("chat-input");
+    const chatMessages = document.getElementById("chat-messages");
+
+    chatbotIcon.addEventListener("click", () => {
+      chatbotWindow.style.display = chatbotWindow.style.display === "none" ? "block" : "none";
+    });
+
+    chatInput.addEventListener("keypress", function (e) {
+      if (e.key === "Enter" && chatInput.value.trim() !== "") {
+        const userMsg = chatInput.value.trim();
+        chatMessages.innerHTML += `<p><strong>Você:</strong> ${userMsg}</p>`;
+        chatInput.value = "";
+
+        let resposta = "Desculpe, não entendi. Tente perguntar de outra forma.";
+
+        if (userMsg.toLowerCase().includes("emagrecer")) {
+          resposta = "Para emagrecer, mantenha déficit calórico e foque em treinos cardiovasculares.";
+        } else if (userMsg.toLowerCase().includes("hipertrofia")) {
+          resposta = "Treinos intensos com foco em musculação + dieta com superávit calórico ajudam.";
+        } else if (userMsg.toLowerCase().includes("proteína")) {
+          resposta = "A ingestão ideal de proteína varia entre 1.6 a 2.2g por kg de peso corporal.";
+        } else if (userMsg.toLowerCase().includes("descanso")) {
+          resposta = "O descanso é essencial. O ideal é dormir de 7 a 9 horas por noite.";
+        }
+
+        chatMessages.innerHTML += `<p><strong>Bot:</strong> ${resposta}</p>`;
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+    });
+  </script>
+
+  <!-- Botão de Chat Flutuante com Font Awesome -->
+  <a href="/chat" class="chat-flutuante" title="Chat com Alunos">
+    <i class="fas fa-comments"></i>
+</a>
+</body>
+</html>
