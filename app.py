@@ -6,6 +6,8 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 from functools import wraps
 from werkzeug.utils import secure_filename
 
+from utils import responder_chatbot
+
 app = Flask(__name__)
 app.secret_key = 'sua_chave_secreta_aqui'
 UPLOAD_FOLDER = 'static/uploads'
@@ -181,6 +183,18 @@ def backup():
     shutil.make_archive(pasta_backup, 'zip', pasta_backup)
     shutil.rmtree(pasta_backup)
     return send_file(f"{pasta_backup}.zip", as_attachment=True)
+
+@app.route('/chat', methods=['GET', 'POST'])
+@login_required
+def chat_view():
+    usuario = session['usuario']
+    if request.method == 'POST':
+        mensagem = request.form['mensagem']
+        mensagem.append({'remetente': usuario, 'mensagem': mensagem})
+    return render_template('chat.html', mensagens=mensagem)
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

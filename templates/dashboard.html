@@ -18,7 +18,7 @@
     }
     header {
       background: #000;
-      padding: 15px 30px;
+      padding: 9px 30px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -139,18 +139,18 @@
       <p>Aqui você pode acessar seu progresso no ranking, recompensas e mais!</p>
       <button onclick="window.location.href='/recompensa'">Acessar Recompensas</button>
       <button onclick="window.location.href='/ranking_dicas'">Ver Ranking</button>
-      <button onclick="window.location.href='/perfil'">Editar perfil</button>
-      <button onclick="window.location.href='/plano_treino'">Ver plano de treino</button>
       <button onclick="window.location.href='/progresso'">Ver progresso</button>
       {% if usuario == 'admin' %}
       <button onclick="window.location.href='/previsao'">Ver Previsão de Cancelamento</button>
-      <button onclick="window.location.href='/fazer_backup'">Fazer Backup Completo</button>
 {% endif %}
     </div>
   </div>
 
   <!-- Chatbot flutuante -->
   <button id="chatbot-icon">💬</button>
+  <!-- Botão de Chat Flutuante com Font Awesome -->
+  <a href="/chat" class="chat-flutuante" title="Chat com Alunos">
+    <i class="fas fa-comments"></i>
 
   <div id="chatbot-window">
     <h4>Ajuda Rápida</h4>

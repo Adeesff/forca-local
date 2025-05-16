@@ -1,12 +1,52 @@
-
 <!-- templates/components/chatbot.html -->
 <div style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
-    <button onclick="abrirChatbot()" style="background: #FFD700; border: none; border-radius: 50%; width: 60px; height: 60px; font-size: 24px; cursor: pointer;">💬</button>
+  <button onclick="abrirChatbot()" style="background: #FFD700; border: none; border-radius: 50%; width: 60px; height: 60px; font-size: 24px; cursor: pointer;">💬</button>
+</div>
+
+<!-- Caixa do chatbot -->
+<div id="chatbot-container" style="display: none; position: fixed; bottom: 90px; right: 20px; width: 300px; height: 400px; background: white; border: 1px solid #ccc; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 1000; display: flex; flex-direction: column;">
+  <div style="background: #FFD700; padding: 10px; border-radius: 10px 10px 0 0; font-weight: bold;">Chatbot Força Local</div>
+  <div id="chat-mensagens" style="flex: 1; padding: 10px; overflow-y: auto; font-size: 14px;"></div>
+  <div style="display: flex; padding: 10px;">
+    <input id="chat-input" type="text" placeholder="Digite sua pergunta..." style="flex: 1; padding: 5px; border-radius: 5px; border: 1px solid #ccc;" />
+    <button onclick="enviarMensagem()" style="margin-left: 5px; background: #FFD700; border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer;">Enviar</button>
   </div>
-  
-  <script>
-    function abrirChatbot() {
-      alert('Aqui será aberto o chatbot futuramente!');
-    }
-  </script>
-  
+</div>
+
+<script>
+  function abrirChatbot() {
+    const container = document.getElementById("chatbot-container");
+    container.style.display = container.style.display === "none" ? "flex" : "none";
+  }
+
+  function adicionarMensagem(texto, remetente) {
+    const mensagens = document.getElementById("chat-mensagens");
+    const msg = document.createElement("div");
+    msg.textContent = `${remetente}: ${texto}`;
+    msg.style.marginBottom = "8px";
+    mensagens.appendChild(msg);
+    mensagens.scrollTop = mensagens.scrollHeight;
+  }
+
+  function enviarMensagem() {
+    const input = document.getElementById("chat-input");
+    const pergunta = input.value.trim();
+    if (!pergunta) return;
+
+    adicionarMensagem(pergunta, "Você");
+    input.value = "";
+
+    fetch("/chatbot", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `mensagem=${encodeURIComponent(pergunta)}`
+    })
+    .then(res => res.json())
+    .then(data => {
+      adicionarMensagem(data.resposta, "Bot");
+    })
+    .catch(err => {
+      adicionarMensagem("Erro ao obter resposta.", "Bot");
+    });
+  }
+</script>
