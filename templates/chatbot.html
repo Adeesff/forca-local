@@ -1,52 +1,48 @@
-<!-- templates/components/chatbot.html -->
 <div style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
   <button onclick="abrirChatbot()" style="background: #FFD700; border: none; border-radius: 50%; width: 60px; height: 60px; font-size: 24px; cursor: pointer;">💬</button>
-</div>
 
-<!-- Caixa do chatbot -->
-<div id="chatbot-container" style="display: none; position: fixed; bottom: 90px; right: 20px; width: 300px; height: 400px; background: white; border: 1px solid #ccc; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 1000; display: flex; flex-direction: column;">
-  <div style="background: #FFD700; padding: 10px; border-radius: 10px 10px 0 0; font-weight: bold;">Chatbot Força Local</div>
-  <div id="chat-mensagens" style="flex: 1; padding: 10px; overflow-y: auto; font-size: 14px;"></div>
-  <div style="display: flex; padding: 10px;">
-    <input id="chat-input" type="text" placeholder="Digite sua pergunta..." style="flex: 1; padding: 5px; border-radius: 5px; border: 1px solid #ccc;" />
-    <button onclick="enviarMensagem()" style="margin-left: 5px; background: #FFD700; border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer;">Enviar</button>
+  <div id="chatbotBox" style="display: none; position: absolute; bottom: 70px; right: 0; width: 300px; height: 400px; background: white; border: 1px solid #ccc; border-radius: 10px; padding: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.3);">
+    <div style="text-align: right;">
+      <button onclick="fecharChatbot()" style="background: none; border: none; font-size: 18px;">✖</button>
+    </div>
+    <div id="mensagens" style="height: 300px; overflow-y: auto; border: 1px solid #eee; padding: 5px; margin-bottom: 10px;"></div>
+    <input type="text" id="inputMensagem" placeholder="Digite sua mensagem..." style="width: 100%; padding: 5px;" onkeydown="if(event.key === 'Enter') enviarMensagem()">
+    <button onclick="enviarMensagem()" style="width: 100%; margin-top: 5px; background-color: #FFD700; border: none; padding: 5px;">Enviar</button>
   </div>
 </div>
 
 <script>
   function abrirChatbot() {
-    const container = document.getElementById("chatbot-container");
-    container.style.display = container.style.display === "none" ? "flex" : "none";
+    document.getElementById("chatbotBox").style.display = "block";
   }
 
-  function adicionarMensagem(texto, remetente) {
-    const mensagens = document.getElementById("chat-mensagens");
-    const msg = document.createElement("div");
-    msg.textContent = `${remetente}: ${texto}`;
-    msg.style.marginBottom = "8px";
-    mensagens.appendChild(msg);
-    mensagens.scrollTop = mensagens.scrollHeight;
+  function fecharChatbot() {
+    document.getElementById("chatbotBox").style.display = "none";
   }
 
   function enviarMensagem() {
-    const input = document.getElementById("chat-input");
-    const pergunta = input.value.trim();
-    if (!pergunta) return;
+    const input = document.getElementById("inputMensagem");
+    const mensagens = document.getElementById("mensagens");
+    const texto = input.value.trim();
+    if (texto === "") return;
 
-    adicionarMensagem(pergunta, "Você");
+    mensagens.innerHTML += `<div><strong>Você:</strong> ${texto}</div>`;
     input.value = "";
 
     fetch("/chatbot", {
       method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: `mensagem=${encodeURIComponent(pergunta)}`
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ mensagem: texto })
     })
     .then(res => res.json())
     .then(data => {
-      adicionarMensagem(data.resposta, "Bot");
+      mensagens.innerHTML += `<div><strong>Bot:</strong> ${data.resposta}</div>`;
+      mensagens.scrollTop = mensagens.scrollHeight;
     })
     .catch(err => {
-      adicionarMensagem("Erro ao obter resposta.", "Bot");
+      mensagens.innerHTML += `<div><strong>Bot:</strong> Ocorreu um erro. Tente novamente.</div>`;
     });
   }
 </script>

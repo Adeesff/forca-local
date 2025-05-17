@@ -6,12 +6,14 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 from functools import wraps
 from werkzeug.utils import secure_filename
 
-from utils import responder_chatbot
-
 app = Flask(__name__)
 app.secret_key = 'sua_chave_secreta_aqui'
 UPLOAD_FOLDER = 'static/uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+def gerar_resposta(mensagem):
+    return f"Você disse: {mensagem}"
+
 
 # Função decoradora para login obrigatório
 def login_required(f):
@@ -141,60 +143,13 @@ def progresso():
     frequencias = [1 for _ in dias]
     return render_template('progresso.html', dias=dias, frequencias=frequencias)
 
-@app.route('/perfil', methods=['GET', 'POST'])
-@login_required
-def perfil():
-    usuarios = carregar_usuarios()
-    usuario = session['usuario']
-    if request.method == 'POST':
-        usuarios[usuario]['nome'] = request.form['nome']
-        usuarios[usuario]['bio'] = request.form['bio']
-        if 'foto' in request.files:
-            foto = request.files['foto']
-            if foto.filename != '':
-                filename = secure_filename(foto.filename)
-                caminho = os.path.join(UPLOAD_FOLDER, filename)
-                foto.save(caminho)
-                usuarios[usuario]['foto'] = caminho
-        salvar_usuarios(usuarios)
-    return render_template('perfil.html', usuario=usuario, dados=usuarios[usuario])
 
-@app.route('/perfil/<nome_usuario>')
-@login_required
-def visualizar_perfil(nome_usuario):
-    usuarios = carregar_usuarios()
-    if nome_usuario in usuarios:
-        return render_template('visualizar_perfil.html', usuario=nome_usuario, dados=usuarios[nome_usuario])
-    return "Usuário não encontrado", 404
-
-@app.route('/chat')
-@login_required
-def chat():
-    usuarios = carregar_usuarios()
-    return render_template('chat.html', usuarios=usuarios.keys())
-
-@app.route('/backup')
-@login_required
-def backup():
-    agora = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    pasta_backup = f"backup_{agora}"
-    os.makedirs(pasta_backup, exist_ok=True)
-    shutil.copy("usuarios.json", os.path.join(pasta_backup, "usuarios.json"))
-    shutil.make_archive(pasta_backup, 'zip', pasta_backup)
-    shutil.rmtree(pasta_backup)
-    return send_file(f"{pasta_backup}.zip", as_attachment=True)
-
-@app.route('/chat', methods=['GET', 'POST'])
-@login_required
-def chat_view():
-    usuario = session['usuario']
-    if request.method == 'POST':
-        mensagem = request.form['mensagem']
-        mensagem.append({'remetente': usuario, 'mensagem': mensagem})
-    return render_template('chat.html', mensagens=mensagem)
-
-
-
+@app.route('/chatbot', methods=['POST'])
+def chatbot():
+    data = request.get_json()
+    mensagem = data.get('mensagem')
+    resposta = gerar_resposta(mensagem)
+    return jsonify({'resposta': resposta})
 
 if __name__ == '__main__':
     app.run(debug=True)
